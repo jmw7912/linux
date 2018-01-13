@@ -444,6 +444,17 @@ static const struct dmi_system_id gp107_accel_blacklist[] = {
 	{ }
 };
 
+static const struct dmi_system_id runpm_blacklist[] = {
+	{
+		.ident = "ASUSTeK COMPUTER INC. X555UQ",
+		.matches = {
+			DMI_MATCH(DMI_SYS_VENDOR, "ASUSTeK COMPUTER INC."),
+			DMI_MATCH(DMI_PRODUCT_NAME, "X555UQ"),
+		},
+	},
+	{ }
+};
+
 static int
 nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 {
@@ -483,6 +494,9 @@ nouveau_drm_load(struct drm_device *dev, unsigned long flags)
 	if (drm->client.device.info.chipset == 0x137 &&
 	    dmi_check_system(gp107_accel_blacklist))
 		nouveau_noaccel = 1;
+
+	if (dmi_check_system(runpm_blacklist))
+		nouveau_runtime_pm = 0;
 
 	nouveau_vga_init(drm);
 
